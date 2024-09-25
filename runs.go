@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/google/jsonapi"
-	"reflect"
 	"time"
 )
 
@@ -38,13 +37,13 @@ type RunToken struct {
 }
 
 func (p *Runs) Token(runId string) (string, error) {
-	var response RunToken
+	response := new(RunToken)
 	_, err := p.sdk.Client.
 		SetJSONUnmarshaler(func(data []byte, v interface{}) error {
-			return jsonapi.UnmarshalPayload(bytes.NewReader(data), reflect.TypeOf(v))
+			return jsonapi.UnmarshalPayload(bytes.NewReader(data), v.(*RunToken))
 		}).
 		R().
-		SetResult(&response).
+		SetResult(response).
 		Post(fmt.Sprintf("/api/v2/runs/%s/authentication-token", runId))
 	if err != nil {
 		return "", err
