@@ -1,7 +1,10 @@
 package chushi
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/google/jsonapi"
+	"reflect"
 	"time"
 )
 
@@ -37,6 +40,9 @@ type RunToken struct {
 func (p *Runs) Token(runId string) (string, error) {
 	var response RunToken
 	_, err := p.sdk.Client.
+		SetJSONUnmarshaler(func(data []byte, v interface{}) error {
+			return jsonapi.UnmarshalPayload(bytes.NewReader(data), reflect.TypeOf(v))
+		}).
 		R().
 		SetResult(&response).
 		Post(fmt.Sprintf("/api/v2/runs/%s/authentication-token", runId))
