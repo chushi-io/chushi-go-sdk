@@ -11,6 +11,10 @@ type Runs struct {
 	sdk *Sdk
 }
 
+type OidcTokenResponse struct {
+	Token string `json:"token"`
+}
+
 func (p *Runs) OidcToken(runId string) (string, error) {
 	var response OidcTokenResponse
 	_, err := p.sdk.Client.
@@ -21,10 +25,6 @@ func (p *Runs) OidcToken(runId string) (string, error) {
 		return "", err
 	}
 	return response.Token, nil
-}
-
-type OidcTokenResponse struct {
-	Token string `json:"token"`
 }
 
 type RunToken struct {
@@ -38,14 +38,15 @@ type RunToken struct {
 
 func (p *Runs) Token(runId string) (string, error) {
 	response := new(RunToken)
-	_, err := p.sdk.Client.
-		SetJSONUnmarshaler(func(data []byte, v interface{}) error {
-			return jsonapi.UnmarshalPayload(bytes.NewReader(data), v.(*RunToken))
-		}).
+	resp, err := p.sdk.Client.
 		R().
-		SetResult(response).
+		//SetResult(response).
 		Post(fmt.Sprintf("/api/v2/runs/%s/authentication-token", runId))
 	if err != nil {
+		return "", err
+	}
+
+	if err := jsonapi.UnmarshalPayload(bytes.NewReader(resp.Body()), response); err != nil {
 		return "", err
 	}
 	return response.Token, nil
