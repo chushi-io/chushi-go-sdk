@@ -39,7 +39,7 @@ func (p *Runs) Token(runId string) (string, error) {
 	_, err := p.sdk.Client.
 		R().
 		SetResult(&response).
-		Get(fmt.Sprintf("/api/v2/runs/%s/authentication-token", runId))
+		Post(fmt.Sprintf("/api/v2/runs/%s/authentication-token", runId))
 	if err != nil {
 		return "", err
 	}
