@@ -13,6 +13,7 @@ type Sdk struct {
 	Runs    *Runs
 	Plans   *Plans
 	Applies *Applies
+	Jobs    *Jobs
 }
 
 func New(config *tfe.Config) (*Sdk, error) {
@@ -29,5 +30,6 @@ func New(config *tfe.Config) (*Sdk, error) {
 	sdk.Plans = &Plans{sdk}
 	sdk.Applies = &Applies{sdk}
 	sdk.Runs = &Runs{sdk}
+	sdk.Jobs = &Jobs{sdk}
 	return sdk, nil
 }
