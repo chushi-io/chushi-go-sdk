@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/google/jsonapi"
 	"github.com/hashicorp/go-tfe"
+	"reflect"
 	"time"
 )
 
@@ -25,8 +26,20 @@ type Jobs struct {
 	sdk *Sdk
 }
 
-func (j *Jobs) List() ([]Job, error) {
-	return nil, nil
+func (j *Jobs) List(agentPoolId string) ([]Job, error) {
+	var jobs []Job
+	resp, err := j.sdk.Client.R().Get(fmt.Sprintf("/api/v2/agent-pools/%s/jobs", agentPoolId))
+	if err != nil {
+		return nil, err
+	}
+	items, err := jsonapi.UnmarshalManyPayload(bytes.NewReader(resp.Body()), reflect.TypeOf(new(Job)))
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range items {
+		jobs = append(jobs, item.(Job))
+	}
+	return jobs, nil
 }
 
 func (j *Jobs) Read(jobId string) (*Job, error) {
