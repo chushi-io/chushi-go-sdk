@@ -3,8 +3,8 @@ package chushi
 import (
 	"bytes"
 	"fmt"
-	"github.com/google/jsonapi"
 	"github.com/hashicorp/go-tfe"
+	"github.com/hashicorp/jsonapi"
 	"reflect"
 	"time"
 )

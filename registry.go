@@ -2,7 +2,7 @@ package chushi
 
 import (
 	"github.com/go-resty/resty/v2"
-	"github.com/google/jsonapi"
+	"github.com/hashicorp/jsonapi"
 	"reflect"
 )
 
