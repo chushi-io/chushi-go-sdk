@@ -16,6 +16,7 @@ type Job struct {
 	LastUsedAt  time.Time `jsonapi:"attr,last-used-at,iso8601"`
 	Token       string    `jsonapi:"attr,token"`
 	ExpiredAt   time.Time `jsonapi:"attr,expired-at,iso8601"`
+	Operation   string    `jsonapi:"attr,operation"`
 
 	Run       *tfe.Run       `jsonapi:"relation,run"`
 	Workspace *tfe.Workspace `jsonapi:"relation,workspace"`
