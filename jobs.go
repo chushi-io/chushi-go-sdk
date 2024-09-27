@@ -53,9 +53,19 @@ func (j *Jobs) Read(jobId string) (*Job, error) {
 	return response, err
 }
 
-func (j *Jobs) Lock(jobId string) (*Job, error) {
+func (j *Jobs) Lock(jobId string, lockId string) (*Job, error) {
 	response := new(Job)
-	resp, err := j.sdk.Client.R().Post(fmt.Sprintf("/api/v2/jobs/%s/lock", jobId))
+	resp, err := j.sdk.Client.R().
+		SetBody(map[string]interface{}{
+			"data": map[string]interface{}{
+				"id":   jobId,
+				"type": "jobs",
+				"attributes": map[string]interface{}{
+					"locked_by": lockId,
+				},
+			},
+		}).
+		Post(fmt.Sprintf("/api/v2/jobs/%s/lock", jobId))
 	if err != nil {
 		return nil, err
 	}
@@ -64,9 +74,19 @@ func (j *Jobs) Lock(jobId string) (*Job, error) {
 	return response, err
 }
 
-func (j *Jobs) Unlock(jobId string) (*Job, error) {
+func (j *Jobs) Unlock(jobId string, lockId string) (*Job, error) {
 	response := new(Job)
-	resp, err := j.sdk.Client.R().Post(fmt.Sprintf("/api/v2/jobs/%s/unlock", jobId))
+	resp, err := j.sdk.Client.R().
+		SetBody(map[string]interface{}{
+			"data": map[string]interface{}{
+				"id":   jobId,
+				"type": "jobs",
+				"attributes": map[string]interface{}{
+					"locked_by": lockId,
+				},
+			},
+		}).
+		Post(fmt.Sprintf("/api/v2/jobs/%s/unlock", jobId))
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +99,15 @@ func (j *Jobs) Update(jobId string, status string) (*Job, error) {
 	response := new(Job)
 	resp, err := j.sdk.Client.
 		R().
-		SetBody(map[string]interface{}{"status": status}).
+		SetBody(map[string]interface{}{
+			"data": map[string]interface{}{
+				"id":   jobId,
+				"type": "jobs",
+				"attributes": map[string]interface{}{
+					"status": status,
+				},
+			},
+		}).
 		Patch(fmt.Sprintf("/api/v2/jobs/%s", jobId))
 	if err != nil {
 		return nil, err
