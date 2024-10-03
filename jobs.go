@@ -62,7 +62,7 @@ func (j *Jobs) Lock(jobId string, lockId string) (*Job, error) {
 				"id":   jobId,
 				"type": "jobs",
 				"attributes": map[string]interface{}{
-					"locked_by": lockId,
+					"status": lockId,
 				},
 			},
 		}).
