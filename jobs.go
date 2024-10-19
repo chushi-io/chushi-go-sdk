@@ -34,8 +34,8 @@ type Jobs struct {
 	sdk *Sdk
 }
 
-func (j *Jobs) List(agentPoolId string) ([]*Job, error) {
-	var jobs []*Job
+func (j *Jobs) List(agentPoolId string) (*JobList, error) {
+	var jobs JobList
 	resp, err := j.sdk.Client.R().Get(fmt.Sprintf("/api/v2/agent-pools/%s/jobs", agentPoolId))
 	if err != nil {
 		return nil, err
@@ -45,13 +45,13 @@ func (j *Jobs) List(agentPoolId string) ([]*Job, error) {
 		return nil, err
 	}
 	for _, item := range items {
-		jobs = append(jobs, item.(*Job))
+		jobs.Items = append(jobs.Items, item.(*Job))
 	}
-	return jobs, nil
+	return &jobs, nil
 }
 
-func (j *Jobs) Read(jobId string) (*JobList, error) {
-	response := new(JobList)
+func (j *Jobs) Read(jobId string) (*Job, error) {
+	response := new(Job)
 	resp, err := j.sdk.Client.R().Get(fmt.Sprintf("/api/v2/jobs/%s", jobId))
 	if err != nil {
 		return nil, err
