@@ -6,21 +6,28 @@ import (
 	"github.com/hashicorp/go-tfe"
 	"github.com/hashicorp/jsonapi"
 	"reflect"
-	"time"
 )
 
 type Job struct {
-	ID          string    `jsonapi:"primary,jobs"`
-	CreatedAt   time.Time `jsonapi:"attr,created-at,iso8601"`
-	Description string    `jsonapi:"attr,description"`
-	LastUsedAt  time.Time `jsonapi:"attr,last-used-at,iso8601"`
-	Token       string    `jsonapi:"attr,token"`
-	ExpiredAt   time.Time `jsonapi:"attr,expired-at,iso8601"`
-	Operation   string    `jsonapi:"attr,operation"`
+	ID        string  `jsonapi:"primary,jobs"`
+	LockedBy  *string `jsonapi:"attr,locked-by"`
+	Locked    bool    `jsonapi:"attr,locked"`
+	Operation string  `jsonapi:"attr,operation"`
+	CreatedAt string  `jsonapi:"attr,created-at"`
+	UpdatedAt string  `jsonapi:"attr,updated-at"`
+	Status    string  `jsonapi:"attr,status"`
 
-	Run       *tfe.Run       `jsonapi:"relation,run"`
-	Workspace *tfe.Workspace `jsonapi:"relation,workspace"`
-	AgentPool *tfe.AgentPool `jsonapi:"relation,agent-pool"`
+	// Relations
+	Workspace    *tfe.Workspace    `jsonapi:"relation,workspace"`
+	Run          *tfe.Run          `jsonapi:"relation,run"`
+	AgentPool    *tfe.AgentPool    `jsonapi:"relation,agent-pool"`
+	Organization *tfe.Organization `jsonapi:"relation,organization"`
+
+	Links map[string]interface{} `jsonapi:"links,omitempty"`
+}
+
+type JobList struct {
+	Items []*Job
 }
 
 type Jobs struct {
