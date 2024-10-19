@@ -51,7 +51,7 @@ func (j *Jobs) List(agentPoolId string) ([]*Job, error) {
 }
 
 func (j *Jobs) Read(jobId string) (*JobList, error) {
-	response := new(Job)
+	response := new(JobList)
 	resp, err := j.sdk.Client.R().Get(fmt.Sprintf("/api/v2/jobs/%s", jobId))
 	if err != nil {
 		return nil, err
